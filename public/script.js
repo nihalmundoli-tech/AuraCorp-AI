@@ -72,19 +72,35 @@ document.addEventListener('DOMContentLoaded', () => {
                 return;
             }
 
-            // In a real app, this sends a POST to the backend
-            submitBotRequest.innerText = 'Sending to CEO...';
+            // Connect to real backend
+            submitBotRequest.innerText = 'Creating Agent...';
             submitBotRequest.disabled = true;
 
-            setTimeout(() => {
-                alert(`Request for "${role}" sent to CEO for approval.`);
-                submitBotRequest.innerText = 'Submit to CEO';
-                submitBotRequest.disabled = false;
-                document.getElementById('botRoleInput').value = '';
-                document.getElementById('botDescInput').value = '';
-                closeModal();
-                loadAgents(); // Reload to hypothetically show new bot
-            }, 1000);
+            fetch('/api/agents', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    role: role,
+                    description: desc,
+                    system_prompt: `You are the ${role}. Your duties include: ${desc}. Act according to your corporate rank and role.`
+                })
+            })
+                .then(res => res.json())
+                .then(data => {
+                    alert(`Agent "${role}" has been created and inducted into the AuraCorp system.`);
+                    submitBotRequest.innerText = 'Submit to CEO';
+                    submitBotRequest.disabled = false;
+                    document.getElementById('botRoleInput').value = '';
+                    document.getElementById('botDescInput').value = '';
+                    closeModal();
+                    loadAgents(); // Reload list
+                })
+                .catch(err => {
+                    console.error('Bot creation error', err);
+                    alert('Management rejected the request (System Error).');
+                    submitBotRequest.innerText = 'Submit to CEO';
+                    submitBotRequest.disabled = false;
+                });
         });
     }
 

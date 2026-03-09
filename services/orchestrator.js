@@ -33,6 +33,33 @@ async function processTaskQueue(io) {
                 db.run(`INSERT INTO task_steps (task_id, agent_id, action_type, content) VALUES (?, ?, ?, ?)`,
                     [task.id, task.assigned_agent_id, 'execution', result]);
 
+                // --- SPECIAL: Database Manager Agent logic ---
+                if (task.role.includes('Database Manager')) {
+                    try {
+                        const { appendToSheet } = require('./googleSheets');
+                        // These would come from .env in a real setup
+                        const SPREADSHEET_ID = process.env.GOOGLE_SHEET_ID;
+                        const CREDENTIALS = process.env.GOOGLE_SERVICE_ACCOUNT ? JSON.parse(process.env.GOOGLE_SERVICE_ACCOUNT) : null;
+
+                        if (SPREADSHEET_ID && CREDENTIALS) {
+                            await appendToSheet(SPREADSHEET_ID, 'Sheet1!A1', [
+                                new Date().toISOString(),
+                                task.title,
+                                result.substring(0, 1000) // Truncate if too long for a cell
+                            ], CREDENTIALS);
+
+                            io.emit('live_feed', {
+                                agent: task.role,
+                                message: `Successfully pushed data from "${task.title}" to Google Sheets.`,
+                                time: new Date().toISOString()
+                            });
+                        }
+                    } catch (sheetErr) {
+                        console.error('Failed to update Google Sheet:', sheetErr);
+                    }
+                }
+                // ----------------------------------------------
+
                 // 4. Decide Review Loop vs Completion
                 // If it's the CEO acting, it's done. If it's a subordinate, it goes to review.
                 if (task.role === 'CEO' || task.role === 'COO') {
