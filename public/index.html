@@ -1,0 +1,286 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Corporation Command Center</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+    <div id="app">
+        <!-- Sidebar Navigation -->
+        <aside class="sidebar">
+            <div class="logo">
+                <div class="logo-icon"></div>
+                <h2>AuraCorp</h2>
+            </div>
+            <nav>
+                <a href="#dashboard" class="nav-item active" data-target="dashboard">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <rect x="3" y="3" width="7" height="7"></rect>
+                        <rect x="14" y="3" width="7" height="7"></rect>
+                        <rect x="14" y="14" width="7" height="7"></rect>
+                        <rect x="3" y="14" width="7" height="7"></rect>
+                    </svg>
+                    Command Center
+                </a>
+                <a href="#roster" class="nav-item" data-target="roster">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
+                        <circle cx="9" cy="7" r="4"></circle>
+                        <path d="M23 21v-2a4 4 0 0 0-3-3.87"></path>
+                        <path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
+                    </svg>
+                    Agent Roster
+                </a>
+                <a href="#messages" class="nav-item" data-target="messages">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path>
+                    </svg>
+                    Direct Messages
+                </a>
+                <a href="#tasks" class="nav-item" data-target="tasks">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M9 11l3 3L22 4"></path>
+                        <path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"></path>
+                    </svg>
+                    Task Board
+                </a>
+            </nav>
+            <div class="sidebar-footer">
+                <button id="logoutBtn" class="glass-btn">Logout</button>
+            </div>
+        </aside>
+
+        <!-- Main Content Area -->
+        <main class="main-content">
+            <!-- Top Header -->
+            <header class="top-header">
+                <div class="search-bar">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <circle cx="11" cy="11" r="8"></circle>
+                        <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+                    </svg>
+                    <input type="text" placeholder="Search tasks, agents, or messages...">
+                </div>
+                <div class="user-profile">
+                    <div class="notification-bell">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                            stroke-width="2">
+                            <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path>
+                            <path d="M13.73 21a2 2 0 0 1-3.46 0"></path>
+                        </svg>
+                        <span class="badge">3</span>
+                    </div>
+                    <div class="avatar">U</div>
+                </div>
+            </header>
+
+            <!-- Dynamic Views Container -->
+            <div id="views-container">
+
+                <!-- Dashboard View -->
+                <section id="dashboard" class="view active">
+                    <div class="view-header">
+                        <h1>Command Center</h1>
+                        <p>Live corporate operations overview</p>
+                    </div>
+
+                    <div class="dashboard-grid">
+                        <!-- Live Feed Panel -->
+                        <div class="panel live-feed" style="grid-column: span 2; grid-row: span 2;">
+                            <div class="panel-header">
+                                <h3>Live Agent Communications</h3>
+                                <div class="pulse-indicator"></div>
+                            </div>
+                            <div class="feed-container" id="live-feed">
+                                <!-- Example Feed Items -->
+                                <div class="feed-item">
+                                    <div class="feed-avatar ceo">C</div>
+                                    <div class="feed-content">
+                                        <h4>CEO Agent <span>2m ago</span></h4>
+                                        <p>Approved the Q3 strategic plan. Assigning breakdown to COO.</p>
+                                    </div>
+                                </div>
+                                <div class="feed-item">
+                                    <div class="feed-avatar coo">O</div>
+                                    <div class="feed-content">
+                                        <h4>COO Agent <span>1m ago</span></h4>
+                                        <p>Received Q3 plan. Strategy Planning, please segment into distinct KPIs.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- System Status -->
+                        <div class="panel system-stats">
+                            <h3>Active Agents</h3>
+                            <div class="stat-number">8 <span class="trend up">Online</span></div>
+                        </div>
+
+                        <!-- Pending Approvals -->
+                        <div class="panel pending-approvals">
+                            <h3>CEO Approvals</h3>
+                            <div class="stat-number">2 <span class="trend">Pending</span></div>
+                        </div>
+
+                        <!-- Recent Tasks -->
+                        <div class="panel recent-tasks" style="grid-column: span 2;">
+                            <h3>Active Task Streams</h3>
+                            <ul class="task-list">
+                                <li class="task-row">
+                                    <div class="task-info">
+                                        <span class="task-title">Lead Scraping Campaign</span>
+                                        <span class="task-agent">Lead Gen Agent</span>
+                                    </div>
+                                    <div class="task-status in-progress">In Progress</div>
+                                </li>
+                                <li class="task-row">
+                                    <div class="task-info">
+                                        <span class="task-title">Evaluate Scraped Leads</span>
+                                        <span class="task-agent">Evaluator Agent</span>
+                                    </div>
+                                    <div class="task-status pending">Waiting</div>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Roster View (Hidden by default) -->
+                <section id="roster" class="view">
+                    <div class="view-header">
+                        <div class="header-left">
+                            <h1>Agent Roster</h1>
+                            <p>Manage and orchestrate your AI workforce</p>
+                        </div>
+                        <button class="primary-btn" id="requestBotBtn">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                stroke-width="2">
+                                <line x1="12" y1="5" x2="12" y2="19"></line>
+                                <line x1="5" y1="12" x2="19" y2="12"></line>
+                            </svg>
+                            Request New Bot
+                        </button>
+                    </div>
+
+                    <div class="roster-grid" id="agent-cards-container">
+                        <!-- Agent cards will be injected here via JS -->
+                        <div class="agent-card glass-panel">
+                            <div class="agent-avatar ceo">CEO</div>
+                            <h3>Chief Executive Bot</h3>
+                            <p class="role-desc">Final approval on strategy and structural changes.</p>
+                            <div class="agent-meta">
+                                <span class="status online"></span> Online
+                            </div>
+                            <div class="card-actions">
+                                <button class="secondary-btn dm-btn" data-agent="ceo">Message</button>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Messages View -->
+                <section id="messages" class="view">
+                    <div class="chat-layout">
+                        <div class="chat-sidebar">
+                            <h3>Conversations</h3>
+                            <ul class="chat-list" id="chat-sidebar-list">
+                                <!-- Chat threads here -->
+                            </ul>
+                        </div>
+                        <div class="chat-main glass-panel">
+                            <div class="chat-header">
+                                <div class="chat-agent-info">
+                                    <div class="chat-avatar" id="current-chat-avatar">?</div>
+                                    <h3 id="current-chat-name">Select an Agent</h3>
+                                </div>
+                            </div>
+                            <div class="chat-history" id="chat-history">
+                                <div class="empty-state">Select a conversation from the sidebar to start chatting.</div>
+                            </div>
+                            <div class="chat-input-area">
+                                <input type="text" id="chat-input" placeholder="Message agent..." disabled>
+                                <button id="send-btn" disabled>
+                                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                        stroke-width="2">
+                                        <line x1="22" y1="2" x2="11" y2="13"></line>
+                                        <polygon points="22 2 15 22 11 13 2 9 22 2"></polygon>
+                                    </svg>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Tasks View -->
+                <section id="tasks" class="view">
+                    <div class="view-header">
+                        <div class="header-left">
+                            <h1>Task Board</h1>
+                            <p>Departmental workflows and progress tracking</p>
+                        </div>
+                        <button class="primary-btn" id="newTaskBtn">Create Task Loop</button>
+                    </div>
+                    <!-- Kanban board structure -->
+                    <div class="kanban-board">
+                        <div class="kanban-col">
+                            <h3>Backlog <span>(0)</span></h3>
+                            <div class="task-dropzone" id="col-backlog"></div>
+                        </div>
+                        <div class="kanban-col">
+                            <h3>In Progress <span>(2)</span></h3>
+                            <div class="task-dropzone" id="col-progress">
+                                <!-- Example cards -->
+                            </div>
+                        </div>
+                        <div class="kanban-col">
+                            <h3>In Review (CEO/COO) <span>(1)</span></h3>
+                            <div class="task-dropzone" id="col-review"></div>
+                        </div>
+                        <div class="kanban-col">
+                            <h3>Completed <span>(0)</span></h3>
+                            <div class="task-dropzone" id="col-done"></div>
+                        </div>
+                    </div>
+                </section>
+
+            </div>
+        </main>
+    </div>
+
+    <!-- Modals -->
+    <div id="newBotModal" class="modal-backdrop">
+        <div class="modal glass-panel">
+            <div class="modal-header">
+                <h2>Request New Bot</h2>
+                <button class="close-btn">&times;</button>
+            </div>
+            <div class="modal-body">
+                <p class="modal-desc">This request will be sent to the Bot Creator and routed to the CEO for final
+                    approval.</p>
+                <div class="form-group">
+                    <label>Proposed Role Title</label>
+                    <input type="text" id="botRoleInput" placeholder="e.g., Lead Qualifier">
+                </div>
+                <div class="form-group">
+                    <label>Job Description & Responsibilities</label>
+                    <textarea id="botDescInput" rows="4"
+                        placeholder="Describe exactly what this agent should do..."></textarea>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="secondary-btn close-btn">Cancel</button>
+                <button class="primary-btn" id="submitBotRequest">Submit to CEO</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="/socket.io/socket.io.js"></script>
+    <script src="script.js"></script>
+</body>
+
+</html>
