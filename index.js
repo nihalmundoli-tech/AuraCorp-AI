@@ -6,6 +6,8 @@ const authRouter = require('./routes/auth');
 const agentsRouter = require('./routes/agents');
 const tasksRouter = require('./routes/tasks');
 const chatRouter = require('./routes/chat');
+const skillsRouter = require('./routes/skills');
+const settingsRouter = require('./routes/settings');
 const { startOrchestrator } = require('./services/orchestrator');
 
 const app = express();
@@ -27,6 +29,8 @@ app.use('/api/auth', authRouter);
 app.use('/api/agents', agentsRouter);
 app.use('/api/tasks', tasksRouter);
 app.use('/api/chat', chatRouter);
+app.use('/api/skills', skillsRouter);
+app.use('/api/settings', settingsRouter);
 
 // Socket.io connection handling
 io.on('connection', (socket) => {

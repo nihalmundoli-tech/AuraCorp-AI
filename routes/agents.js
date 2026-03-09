@@ -3,14 +3,26 @@ const express = require('express');
 const router = express.Router();
 const db = require('../db');
 
-// Get list of agents from database
+// Get list of agents from database with their skills
 router.get('/', (req, res) => {
-    db.all('SELECT * FROM agents', [], (err, rows) => {
+    const sql = `
+        SELECT a.*, GROUP_CONCAT(s.name) as skills
+        FROM agents a
+        LEFT JOIN agent_skills ask ON a.id = ask.agent_id
+        LEFT JOIN skills s ON ask.skill_id = s.id
+        GROUP BY a.id
+    `;
+    db.all(sql, [], (err, rows) => {
         if (err) {
             console.error(err);
             return res.status(500).json({ error: err.message });
         }
-        res.json(rows);
+        // Convert comma-separated skills string to array
+        const agents = rows.map(a => ({
+            ...a,
+            skills: a.skills ? a.skills.split(',') : []
+        }));
+        res.json(agents);
     });
 });
 
