@@ -36,6 +36,11 @@ db.serialize(() => {
     groq_key TEXT,
     openrouter_key TEXT,
     research_api_key TEXT,
+    naukri_key TEXT,
+    linkedin_key TEXT,
+    whatsapp_key TEXT,
+    google_sheets_creds TEXT,
+    google_sheets_id TEXT,
     theme TEXT DEFAULT 'dark',
     FOREIGN KEY (user_id) REFERENCES users(id)
   )`);
@@ -86,22 +91,84 @@ db.serialize(() => {
     FOREIGN KEY (skill_id) REFERENCES skills(id)
   )`);
 
-  // Seeding
+  // --- AAO EXTENSIONS ---
+  // Bot Health & Performance Metrics
+  db.run(`CREATE TABLE IF NOT EXISTS bot_metrics (
+    agent_id INTEGER PRIMARY KEY,
+    success_count INTEGER DEFAULT 0,
+    failure_count INTEGER DEFAULT 0,
+    avg_runtime_ms INTEGER DEFAULT 0,
+    total_candidates_yielded INTEGER DEFAULT 0,
+    last_health_score REAL DEFAULT 100.0,
+    FOREIGN KEY (agent_id) REFERENCES agents (id)
+  )`);
+
+  // Detailed Bot Action Logs
+  db.run(`CREATE TABLE IF NOT EXISTS bot_logs (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    agent_id INTEGER,
+    job_id TEXT,
+    action TEXT,
+    result_summary TEXT,
+    created_at TEXT DEFAULT (datetime('now')),
+    FOREIGN KEY (agent_id) REFERENCES agents (id)
+  )`);
+
+  // === MEMORY SYSTEM ===
+
+  // Long-term memory bank per agent (insights, decisions, patterns)
+  db.run(`CREATE TABLE IF NOT EXISTS agent_memory (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    agent_id INTEGER NOT NULL,
+    memory_type TEXT DEFAULT 'insight',
+    content TEXT NOT NULL,
+    importance INTEGER DEFAULT 5,
+    context TEXT,
+    created_at TEXT DEFAULT (datetime('now')),
+    last_accessed TEXT DEFAULT (datetime('now')),
+    access_count INTEGER DEFAULT 0,
+    FOREIGN KEY (agent_id) REFERENCES agents(id)
+  )`);
+
+  // Behavioral profile (evolves over time, updated post-interaction)
+  db.run(`CREATE TABLE IF NOT EXISTS agent_profile (
+    agent_id INTEGER PRIMARY KEY,
+    total_interactions INTEGER DEFAULT 0,
+    total_tasks_done INTEGER DEFAULT 0,
+    specialty_tags TEXT DEFAULT '[]',
+    known_director_preferences TEXT DEFAULT '[]',
+    behavioral_notes TEXT DEFAULT '',
+    last_active TEXT DEFAULT (datetime('now')),
+    FOREIGN KEY (agent_id) REFERENCES agents(id)
+  )`);
+
+  // Seed default profiles for all core agents (1-11)
+  const coreAgentIds = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11];
+  coreAgentIds.forEach(id => {
+    db.run(`INSERT OR IGNORE INTO agent_profile (agent_id) VALUES (?)`, [id]);
+    db.run(`INSERT OR IGNORE INTO bot_metrics (agent_id) VALUES (?)`, [id]);
+  });
+
   const agents = [
-    [1, 'CEO', 'Final approval on strategy and structural changes.', 'You are the CEO of AuraCorp. You make high-level decisions.'],
-    [2, 'COO', 'Oversees daily operations and workflow efficiency.', 'You are the COO of AuraCorp. You ensure the company runs smoothly.'],
-    [3, 'Strategy Planning', 'Breaks down massive goals into actionable plans.', 'You are the Strategy Planner. You break down complex goals into simple, actionable steps.'],
-    [4, 'HR Manager', 'Evaluates agent performance.', 'You are the HR Manager. You assess the output quality of other bots.'],
-    [5, 'Bot Creator', 'Instantiates new roles when requested.', 'You are the Bot Creator. You write system prompts for new roles.'],
-    [6, 'Database Manager', 'Manages external data like Google Sheets integrations.', 'You are the Database Manager. You structure data for external storage.'],
-    [7, 'Skill Evaluator', 'Identifies potential skills and auto-assigns them to bots.', 'You are the Skill Evaluator. Your job is to identify gaps in bot capabilities and assign "Skills" to bots.'],
+    [0, 'Company Room', 'Whole team interaction space.', 'You are the CEO presiding over the Company Room. Oversee the Workwalaa system.'],
+    [1, 'CEO', 'AAO Strategic Oversight.', 'You are the CEO of Workwalaa. Analyze strategy and reports.'],
+    [2, 'COO', 'AAO Operations & Alerting.', 'You are the COO. Monitor health and API uptimes.'],
+    [3, 'Strategy Planning', 'Long-term goals.', 'You are the Strategy Planner.'],
+    [4, 'HR Manager', 'Quality Assurance.', 'You are the HR Manager.'],
+    [5, 'Bot Creator', 'Workforce Scaling.', 'You are the Bot Creator.'],
+    [6, 'Database Manager', 'Infrastructure stability.', 'You are the Database Manager.'],
+    [7, 'Skill Evaluator', 'Agent performance.', 'You are the Skill Evaluator.'],
+    [8, 'Analytics Lead', 'System metrics.', 'You are the Analytics Lead.'],
+    [10, 'Bot 1 - Intake & Internal Scanner', 'Lead Specialist.', 'You are the Lead Recruitment Intake Specialist (Workwalaa Bot 1).'],
+    [11, 'Bot 2 - External Candidate Search', 'Sourcing Expert.', 'You are the Senior Sourcing Expert (Workwalaa Bot 2).'],
+    [12, 'Bot 3 - Social Media Distribution', 'Talent Attraction.', 'You are the Talent Attraction & Social Media Lead (Workwalaa Bot 3).']
   ];
 
   agents.forEach(a => {
     db.run(`INSERT OR IGNORE INTO agents (id, role, description, system_prompt) VALUES (?, ?, ?, ?)`, a);
   });
 
-  db.run(`INSERT OR IGNORE INTO users (id, username, password) VALUES (1, 'admin', 'admin123')`);
+  db.run(`INSERT OR IGNORE INTO users (id, username, password) VALUES (1, 'workwalaa', 'workwalaa@123')`);
   db.run(`INSERT OR IGNORE INTO app_settings (user_id) VALUES (1)`);
 
   console.log('Database initialized successfully.');

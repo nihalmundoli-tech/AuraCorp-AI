@@ -20,16 +20,23 @@ router.post('/register', (req, res) => {
     res.status(201).json({ message: 'User registered', userId: newUser.id });
 });
 
-// Simple login (no JWT for free demo)
+// Simple login with specific credentials
 router.post('/login', (req, res) => {
-    const { email, password } = req.body;
-    const user = users.find(u => u.email === email && u.password === password);
-    if (!user) {
-        return res.status(401).json({ error: 'Invalid credentials' });
+    const { username, password } = req.body;
+    console.log(`[AUTH] Login attempt: username="${username}"`);
+    
+    if (username === 'workwalaa' && password === 'workwalaa@123') {
+        process.stdout.write(`[AUTH] Login SUCCESS for: ${username}\n`);
+        const token = 'waa-agentic-secure-token-2024';
+        return res.json({ 
+            success: true, 
+            token, 
+            user: { username: 'workwalaa', role: 'Chief Administrator' } 
+        });
     }
-    // Return a mock token
-    const token = `mock-token-${user.id}`;
-    res.json({ token, userId: user.id });
+    
+    console.log(`[AUTH] Login FAILED for: ${username}`);
+    res.status(401).json({ success: false, error: 'Access Denied: Invalid AI Credentials' });
 });
 
 module.exports = router;

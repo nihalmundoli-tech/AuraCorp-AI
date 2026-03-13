@@ -4,9 +4,19 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AI Corporation Command Center</title>
+    <title>AuraCorp Command Center</title>
+    <meta name="description" content="AuraCorp AI Corporation Command Center - Manage your AI workforce">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="style.css?v=2.0">
+    <link rel="stylesheet" href="style.css?v=3.0">
+    <script>
+        // --- Auth Guard ---
+        (function() {
+            const token = localStorage.getItem('waaToken');
+            if (!token && !window.location.pathname.includes('login.html')) {
+                window.location.href = '/login.html';
+            }
+        })();
+    </script>
 </head>
 
 <body>
@@ -16,6 +26,7 @@
             <div class="scan-line"></div>
             <div class="particles" id="particles"></div>
         </div>
+
         <!-- Sidebar Navigation -->
         <aside class="sidebar">
             <div class="logo">
@@ -32,6 +43,12 @@
                     </svg>
                     Command Center
                 </a>
+                <a href="#messages" class="nav-item" data-target="messages" data-agent="0" id="nav-company-room">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path>
+                    </svg>
+                    Director's Command Center
+                </a>
                 <a href="#roster" class="nav-item" data-target="roster">
                     <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                         <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
@@ -40,12 +57,6 @@
                         <path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
                     </svg>
                     Agent Roster
-                </a>
-                <a href="#messages" class="nav-item" data-target="messages">
-                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                        <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path>
-                    </svg>
-                    Direct Messages
                 </a>
                 <a href="#tasks" class="nav-item" data-target="tasks">
                     <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
@@ -66,8 +77,7 @@
                 <a href="#settings" class="nav-item" data-target="settings">
                     <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                         <circle cx="12" cy="12" r="3"></circle>
-                        <path
-                            d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z">
+                        <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z">
                         </path>
                     </svg>
                     Settings
@@ -82,161 +92,211 @@
         <main class="main-content">
             <!-- Top Header -->
             <header class="top-header">
-                <div class="search-bar">
-                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                        <circle cx="11" cy="11" r="8"></circle>
-                        <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
-                    </svg>
-                    <input type="text" placeholder="Search tasks, agents, or messages...">
+                <div class="header-title">
+                    <h2 style="font-size: 1.1rem; letter-spacing: 1px;">AI CONTROL CENTER</h2>
                 </div>
+                <!-- Premium Attribution -->
+                <a href="https://www.workwalaa.com" target="_blank" class="powered-by-badge">
+                    <span>Powered by</span>
+                    <strong>Workwalaa</strong>
+                </a>
                 <div class="user-profile">
-                    <div class="notification-bell">
-                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-                            stroke-width="2">
+                    <div class="notification-bell" id="notification-toggle">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                             <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path>
                             <path d="M13.73 21a2 2 0 0 1-3.46 0"></path>
                         </svg>
-                        <span class="badge">3</span>
+                        <span class="badge" id="notif-badge">3</span>
                     </div>
-                    <div class="avatar">U</div>
+                    <div class="user-info-text" style="text-align: right; margin-right: 12px; display: none;" id="header-user-info">
+                        <div style="font-size: 14px; font-weight: 600;" id="user-display-name">workwalaa</div>
+                        <div style="font-size: 11px; color: #9ca3af;" id="user-display-role">Chief Administrator</div>
+                    </div>
+                    <div class="avatar" id="header-avatar">W</div>
                 </div>
             </header>
+
+            <script>
+                // Populate user info
+                (function() {
+                    const user = JSON.parse(localStorage.getItem('waaUser') || '{}');
+                    if (user.username) {
+                        document.getElementById('header-user-info').style.display = 'block';
+                        document.getElementById('user-display-name').innerText = user.username;
+                        document.getElementById('user-display-role').innerText = user.role || 'Agent';
+                        document.getElementById('header-avatar').innerText = user.username.charAt(0).toUpperCase();
+                    }
+                })();
+
+                // Logout logic
+                document.getElementById('logoutBtn').addEventListener('click', () => {
+                    localStorage.removeItem('waaToken');
+                    localStorage.removeItem('waaUser');
+                    window.location.href = '/login.html';
+                });
+            </script>
 
             <!-- Dynamic Views Container -->
             <div id="views-container">
 
-                <!-- Dashboard View -->
+                <!-- ===== DASHBOARD VIEW ===== -->
                 <section id="dashboard" class="view active">
                     <div class="view-header">
-                        <h1>Command Center</h1>
-                        <p>Live corporate operations overview</p>
+                        <div>
+                            <h1>Command Center</h1>
+                            <p>Live corporate operations overview</p>
+                        </div>
+                        <div class="live-badge">
+                            <div class="pulse-indicator"></div>
+                            <span>Live</span>
+                        </div>
                     </div>
 
-                    <div class="dashboard-grid">
-                        <!-- Live Feed Panel -->
-                        <div class="panel live-feed" style="grid-column: span 2; grid-row: span 2;">
+                    <!-- Quick Stats Bar -->
+                    <div class="stats-bar">
+                        <div class="stat-card">
+                            <div class="stat-icon" style="background:rgba(16,185,129,0.15);color:#10b981;">
+                                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"></circle><path d="M12 2v3M12 19v3M4.22 4.22l2.12 2.12M17.66 17.66l2.12 2.12M2 12h3M19 12h3M4.22 19.78l2.12-2.12M17.66 6.34l2.12-2.12"></path></svg>
+                            </div>
+                            <div>
+                                <div class="stat-value" id="stat-agents">8</div>
+                                <div class="stat-label">Active Agents</div>
+                            </div>
+                            <span class="trend up">● Online</span>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-icon" style="background:rgba(245,158,11,0.15);color:#f59e0b;">
+                                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 11l3 3L22 4"></path><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"></path></svg>
+                            </div>
+                            <div>
+                                <div class="stat-value" id="stat-approvals">2</div>
+                                <div class="stat-label">CEO Approvals</div>
+                            </div>
+                            <span class="trend">● Pending</span>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-icon" style="background:rgba(139,92,246,0.15);color:#8b5cf6;">
+                                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"></polyline></svg>
+                            </div>
+                            <div>
+                                <div class="stat-value" id="stat-target">92%</div>
+                                <div class="stat-label">Monthly Target</div>
+                            </div>
+                            <span class="trend up">● On Track</span>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-icon" style="background:rgba(59,130,246,0.15);color:#3b82f6;">
+                                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"></path></svg>
+                            </div>
+                            <div>
+                                <div class="stat-value" id="stat-leads">1,240</div>
+                                <div class="stat-label">Leads Processed</div>
+                            </div>
+                            <span class="trend up">● 98% Acc</span>
+                        </div>
+                    </div>
+
+                    <!-- Main 50/50 Dashboard Grid -->
+                    <div class="dashboard-two-col">
+
+                        <!-- LEFT 50%: AuraCorp Office Space (bot-to-bot comms) -->
+                        <div class="panel office-space-panel">
                             <div class="panel-header">
-                                <h3>Live Agent Communications</h3>
+                                <div style="display:flex;align-items:center;gap:10px;">
+                                    <div class="panel-icon" style="background:rgba(16,185,129,0.15);color:#10b981;">
+                                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path><polyline points="9 22 9 12 15 12 15 22"></polyline></svg>
+                                    </div>
+                                    <h3>AuraCorp Office Space</h3>
+                                </div>
                                 <div class="pulse-indicator"></div>
                             </div>
+                            <p class="panel-subtitle">Internal bot-to-bot communications across departments</p>
                             <div class="feed-container" id="live-feed">
-                                <!-- Example Feed Items -->
                                 <div class="feed-item">
                                     <div class="feed-avatar ceo">C</div>
                                     <div class="feed-content">
                                         <h4>CEO Agent <span>2m ago</span></h4>
-                                        <p>Approved the Q3 strategic plan. Assigning breakdown to COO.</p>
-                                    </div>
-                                </div>
-                                <div class="feed-item">
-                                    <div class="feed-avatar coo">O</div>
-                                    <div class="feed-content">
-                                        <h4>COO Agent <span>1m ago</span></h4>
-                                        <p>Received Q3 plan. Strategy Planning, please segment into distinct KPIs.</p>
+                                        <p>Cross-checking with COO on Q3 resource allocation.</p>
                                     </div>
                                 </div>
                             </div>
                         </div>
 
-                        <!-- System Status -->
-                        <div class="panel system-stats">
-                            <h3>Active Agents</h3>
-                            <div class="stat-number">8 <span class="trend up">Online</span></div>
-                        </div>
-
-                        <!-- Pending Approvals -->
-                        <div class="panel pending-approvals">
-                            <h3>CEO Approvals</h3>
-                            <div class="stat-number">2 <span class="trend">Pending</span></div>
-                        </div>
-
-                        <!-- Department Rooms -->
-                        <div class="panel dept-rooms">
-                            <h3>🏢 Dept Rooms</h3>
-                            <div class="dept-list">
-                                <div class="dept-item active" data-dept="general"># General</div>
-                                <div class="dept-item" data-dept="hr"># HR-Hiring</div>
-                                <div class="dept-item" data-dept="sales"># Sales-LeadGen</div>
-                                <div class="dept-item" data-dept="ops"># Operations</div>
+                        <!-- RIGHT 50%: Bot Decisions -->
+                        <div class="panel bot-decisions-panel">
+                            <div class="panel-header">
+                                <div style="display:flex;align-items:center;gap:8px;">
+                                    <div class="panel-icon" style="background:rgba(59,130,246,0.15);color:#3b82f6;">
+                                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg>
+                                    </div>
+                                    <h3>🤖 Bot Decisions</h3>
+                                </div>
+                                <div class="pulse-indicator" style="background:#3b82f6;box-shadow:0 0 10px #3b82f6;"></div>
+                            </div>
+                            <p class="panel-subtitle">Strategic decisions and autonomous bot actions</p>
+                            <div class="feed-container" id="bot-decisions-feed">
+                                <div class="empty-state">No strategic decisions yet.</div>
                             </div>
                         </div>
 
-                        <!-- Notice Board -->
-                        <div class="panel notice-board dashboard-wide">
-                            <h3>📢 Notice Board</h3>
-                            <div class="notice-item">
-                                <span class="notice-icon">📊</span>
-                                <div class="notice-text">
-                                    <h4>Monthly Targets: 92% Reached</h4>
-                                    <p>Bot productivity is up 12% this week. Great job, AuraCorp team!</p>
+                    </div>
+
+                    <!-- Bottom Row: Tasks (50%) + Notice Board (50%) -->
+                    <div class="dashboard-two-col" style="margin-top:24px;">
+
+                        <!-- Active Task Streams -->
+                        <div class="panel tasks-panel">
+                            <div class="panel-header">
+                                <div style="display:flex;align-items:center;gap:8px;">
+                                    <div class="panel-icon" style="background:rgba(245,158,11,0.15);color:#f59e0b;">
+                                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 11l3 3L22 4"></path><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"></path></svg>
+                                    </div>
+                                    <h3>Active Task Streams</h3>
                                 </div>
                             </div>
-                            <div class="notice-item">
-                                <span class="notice-icon">🏆</span>
-                                <div class="notice-text">
-                                    <h4>Top Bot: Lead Gen Agent</h4>
-                                    <p>Processed 1,240 leads with 98% accuracy.</p>
-                                </div>
-                            </div>
-                        </div>
-
-                        <!-- Recent Tasks -->
-                        <div class="panel recent-tasks dashboard-wide">
-                            <h3>Active Task Streams</h3>
-                            <ul class="task-list">
-                                <li class="task-row">
+                            <div class="tasks-list-row">
+                                <div class="task-row">
                                     <div class="task-info">
                                         <span class="task-title">Lead Scraping Campaign</span>
                                         <span class="task-agent">Lead Gen Agent</span>
                                     </div>
                                     <div class="task-status in-progress">In Progress</div>
-                                </li>
-                                <li class="task-row">
+                                </div>
+                                <div class="task-row">
                                     <div class="task-info">
                                         <span class="task-title">Evaluate Scraped Leads</span>
                                         <span class="task-agent">Evaluator Agent</span>
                                     </div>
                                     <div class="task-status pending">Waiting</div>
-                                </li>
-                            </ul>
+                                </div>
+                            </div>
                         </div>
+
+                        <!-- Notice Board -->
+                        <div class="panel notice-board">
+                            <h3>📢 Notice Board</h3>
+                            <div class="notice-items-row">
+                                <div class="notice-item">
+                                    <span class="notice-icon">📊</span>
+                                    <div class="notice-text">
+                                        <h4>Monthly Targets: 92% Reached</h4>
+                                        <p>Bot productivity is up 12% this week. Great job, AuraCorp team!</p>
+                                    </div>
+                                </div>
+                                <div class="notice-item">
+                                    <span class="notice-icon">🏆</span>
+                                    <div class="notice-text">
+                                        <h4>Top Bot: Lead Gen Agent</h4>
+                                        <p>Processed 1,240 leads with 98% accuracy.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
                     </div>
                 </section>
 
-                <!-- Roster View (Hidden by default) -->
-                <section id="roster" class="view">
-                    <div class="view-header">
-                        <div class="header-left">
-                            <h1>Agent Roster</h1>
-                            <p>Manage and orchestrate your AI workforce</p>
-                        </div>
-                        <button class="primary-btn" id="requestBotBtn">
-                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-                                stroke-width="2">
-                                <line x1="12" y1="5" x2="12" y2="19"></line>
-                                <line x1="5" y1="12" x2="19" y2="12"></line>
-                            </svg>
-                            Request New Bot
-                        </button>
-                    </div>
-
-                    <div class="roster-grid" id="agent-cards-container">
-                        <!-- Agent cards will be injected here via JS -->
-                        <div class="agent-card glass-panel">
-                            <div class="agent-avatar ceo">CEO</div>
-                            <h3>Chief Executive Bot</h3>
-                            <p class="role-desc">Final approval on strategy and structural changes.</p>
-                            <div class="agent-meta">
-                                <span class="status online"></span> Online
-                            </div>
-                            <div class="card-actions">
-                                <button class="secondary-btn dm-btn" data-agent="ceo">Message</button>
-                            </div>
-                        </div>
-                    </div>
-                </section>
-
-                <!-- Messages View -->
+                <!-- ===== DIRECTOR'S COMMAND CENTER (Messages) ===== -->
                 <section id="messages" class="view">
                     <div class="chat-layout">
                         <div class="chat-sidebar">
@@ -249,7 +309,10 @@
                             <div class="chat-header">
                                 <div class="chat-agent-info">
                                     <div class="chat-avatar" id="current-chat-avatar">?</div>
-                                    <h3 id="current-chat-name">Select an Agent</h3>
+                                    <div>
+                                        <h3 id="current-chat-name">Select an Agent</h3>
+                                        <p style="font-size:0.75rem;color:var(--text-secondary);margin:0;">Director's Command Center</p>
+                                    </div>
                                 </div>
                             </div>
                             <div class="chat-history" id="chat-history">
@@ -258,8 +321,7 @@
                             <div class="chat-input-area">
                                 <input type="text" id="chat-input" placeholder="Message agent..." disabled>
                                 <button id="send-btn" disabled>
-                                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-                                        stroke-width="2">
+                                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                                         <line x1="22" y1="2" x2="11" y2="13"></line>
                                         <polygon points="22 2 15 22 11 13 2 9 22 2"></polygon>
                                     </svg>
@@ -269,7 +331,27 @@
                     </div>
                 </section>
 
-                <!-- Tasks View -->
+                <!-- ===== AGENT ROSTER ===== -->
+                <section id="roster" class="view">
+                    <div class="view-header">
+                        <div class="header-left">
+                            <h1>Agent Roster</h1>
+                            <p>Manage and orchestrate your AI workforce</p>
+                        </div>
+                        <button class="primary-btn" id="requestBotBtn">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <line x1="12" y1="5" x2="12" y2="19"></line>
+                                <line x1="5" y1="12" x2="19" y2="12"></line>
+                            </svg>
+                            Request New Bot
+                        </button>
+                    </div>
+                    <div class="roster-grid" id="agent-cards-container">
+                        <!-- Agent cards injected via JS -->
+                    </div>
+                </section>
+
+                <!-- ===== TASK BOARD ===== -->
                 <section id="tasks" class="view">
                     <div class="view-header">
                         <div class="header-left">
@@ -278,30 +360,39 @@
                         </div>
                         <button class="primary-btn" id="newTaskBtn">Create Task Loop</button>
                     </div>
-                    <!-- Kanban board structure -->
                     <div class="kanban-board">
                         <div class="kanban-col">
-                            <h3>Backlog <span>(0)</span></h3>
-                            <div class="task-dropzone" id="col-backlog"></div>
-                        </div>
-                        <div class="kanban-col">
-                            <h3>In Progress <span>(2)</span></h3>
-                            <div class="task-dropzone" id="col-progress">
-                                <!-- Example cards -->
+                            <div class="kanban-header">
+                                <h3>Pending</h3>
+                                <div class="count-badge" id="count-pending">0</div>
                             </div>
+                            <div class="task-dropzone" id="col-pending"></div>
                         </div>
                         <div class="kanban-col">
-                            <h3>In Review (CEO/COO) <span>(1)</span></h3>
-                            <div class="task-dropzone" id="col-review"></div>
+                            <div class="kanban-header">
+                                <h3>Running</h3>
+                                <div class="count-badge" id="count-running" style="background: rgba(59, 130, 246, 0.1); color: #3b82f6;">0</div>
+                            </div>
+                            <div class="task-dropzone" id="col-running"></div>
                         </div>
                         <div class="kanban-col">
-                            <h3>Completed <span>(0)</span></h3>
-                            <div class="task-dropzone" id="col-done"></div>
+                            <div class="kanban-header">
+                                <h3>Completed</h3>
+                                <div class="count-badge" id="count-completed" style="background: rgba(16, 185, 129, 0.1); color: #10b981;">0</div>
+                            </div>
+                            <div class="task-dropzone" id="col-completed"></div>
+                        </div>
+                        <div class="kanban-col">
+                            <div class="kanban-header">
+                                <h3>Failed</h3>
+                                <div class="count-badge" id="count-failed" style="background: rgba(239, 68, 68, 0.1); color: #ef4444;">0</div>
+                            </div>
+                            <div class="task-dropzone" id="col-failed"></div>
                         </div>
                     </div>
                 </section>
 
-                <!-- Marketplace View -->
+                <!-- ===== BOT MARKETPLACE ===== -->
                 <section id="marketplace" class="view">
                     <div class="view-header">
                         <h1>Bot Marketplace</h1>
@@ -316,64 +407,56 @@
                     </div>
                 </section>
 
-                <!-- Settings View -->
+                <!-- ===== SETTINGS (Central API Manager) ===== -->
                 <section id="settings" class="view">
                     <div class="view-header">
-                        <h1>Platform Configuration</h1>
-                        <p>Manage LLM providers and external service integrations</p>
+                        <h1>Central API Manager</h1>
+                        <p>Unified secure vault for all AI systems and external integrations</p>
                     </div>
                     <div class="settings-grid">
                         <div class="panel glass-panel">
-                            <h3>LLM Provider Keys</h3>
-                            <div class="form-group">
-                                <label>Google Gemini API Key</label>
-                                <input type="password" id="geminiKey" placeholder="Enter key...">
+                            <div style="display:flex; align-items:center; gap:10px; margin-bottom:20px;">
+                                <div class="panel-icon" style="background:rgba(59,130,246,0.1); color:var(--accent-primary);">⚖️</div>
+                                <h3 style="margin:0;">Core AI Providers</h3>
                             </div>
                             <div class="form-group">
-                                <label>Groq API Key</label>
-                                <input type="password" id="groqKey" placeholder="Enter key...">
+                                <label>Google Gemini API (Primary Brain)</label>
+                                <input type="password" id="geminiKey" placeholder="sk-gem-••••••••" class="api-input">
                             </div>
                             <div class="form-group">
-                                <label>OpenRouter API Key</label>
-                                <input type="password" id="openrouterKey" placeholder="Enter key...">
+                                <label>Groq API (Fast Response)</label>
+                                <input type="password" id="groqKey" placeholder="gsk-••••••••" class="api-input">
                             </div>
                             <div class="form-group">
-                                <label>Unified Research API (Maps/LinkedIn/Web)</label>
-                                <input type="password" id="researchKey" placeholder="Enter specialized tool key...">
+                                <label>DeepSeek / OpenRouter (Reasoning)</label>
+                                <input type="password" id="openrouterKey" placeholder="sk-or-••••••••" class="api-input">
                             </div>
-                            <button class="primary-btn" id="saveKeysBtn">Save Configuration</button>
+                            <button class="primary-btn" id="saveKeysBtn" style="width:100%; margin-top:10px;">🔐 SYNCHRONIZE VAULT</button>
                         </div>
+
                         <div class="panel glass-panel">
-                            <h3>👤 Digital Account</h3>
+                            <div style="display:flex; align-items:center; gap:10px; margin-bottom:20px;">
+                                <div class="panel-icon" style="background:rgba(16,185,129,0.1); color:var(--success);">🌐</div>
+                                <h3 style="margin:0;">Recruitment & Social APIs</h3>
+                            </div>
                             <div class="form-group">
-                                <label>Account Status</label>
-                                <div
-                                    style="padding: 12px; background: rgba(16, 185, 129, 0.1); color: var(--status-online); border-radius: 8px; font-size: 0.9rem; font-weight: 600;">
-                                    Persistent Profile Active: admin
-                                </div>
+                                <label>Naukri / Jobs API</label>
+                                <input type="password" id="naukriKey" placeholder="••••••••" class="api-input">
                             </div>
-                            <p style="font-size: 0.8rem; color: var(--text-secondary); margin-bottom: 20px;">
-                                Your API keys and "Force Functions" are now saved securely on the server.
-                            </p>
-                            <h3>🤖 Bot Analytics (Real-time)</h3>
-                            <div class="analytics-metrics">
-                                <div class="metric-row">
-                                    <span>Average Accuracy</span>
-                                    <span class="metric-val">94.2%</span>
-                                </div>
-                                <div class="metric-row">
-                                    <span>Tasks / Hour</span>
-                                    <span class="metric-val">124</span>
-                                </div>
-                                <div class="metric-row">
-                                    <span>Estimated Cost</span>
-                                    <span class="metric-val">$0.02 / Task</span>
-                                </div>
+                            <div class="form-group">
+                                <label>LinkedIn Outreach API</label>
+                                <input type="password" id="linkedinKey" placeholder="••••••••" class="api-input">
                             </div>
-                            <div class="metrics-visual"
-                                style="height: 100px; background: rgba(255,255,255,0.05); border-radius: 8px; margin-top: 15px; border: 1px dashed var(--border-glass); display: flex; align-items: center; justify-content: center; color: var(--text-secondary); font-size: 0.8rem;">
-                                Performance Graph Container
+                            <div class="form-group">
+                                <label>WhatsApp / Social API</label>
+                                <input type="password" id="whatsappKey" placeholder="••••••••" class="api-input">
                             </div>
+                            <div class="form-group">
+                                <label>Google Sheets Spreadsheet ID</label>
+                                <input type="text" id="spreadsheetIdInput" placeholder="1-abc-123..." class="api-input">
+                            </div>
+                            <button class="primary-btn" id="saveRecruitmentBtn" style="width:100%; margin-top:10px; background:var(--success);">💾 SAVE RECRUITMENT NODES</button>
+                            <p style="font-size:10px; color:var(--text-dim); text-align:center; margin-top:10px;">All keys are encrypted at rest using AES-256 standard.</p>
                         </div>
                     </div>
                 </section>
@@ -381,6 +464,22 @@
             </div>
         </main>
     </div>
+
+    <!-- Dynamic Notifications -->
+    <div id="notification-panel" class="notification-panel">
+        <div class="notif-header" style="display:flex; justify-content:space-between; align-items:center; margin-bottom:20px; border-bottom:1px solid var(--border-glass); padding-bottom:10px;">
+            <h3 style="margin:0;">Notifications</h3>
+            <button class="close-btn" id="notif-close" style="background:none;">&times;</button>
+        </div>
+        <div id="notif-list" style="overflow-y:auto; flex:1;">
+            <div class="notification-item">
+                <strong>System Ready</strong>
+                <p style="font-size:12px; margin:5px 0 0 0;">All bot clusters active.</p>
+            </div>
+        </div>
+    </div>
+
+    <div id="toast-container" class="toast-container"></div>
 
     <!-- Modals -->
     <div id="newBotModal" class="modal-backdrop">
@@ -390,16 +489,14 @@
                 <button class="close-btn">&times;</button>
             </div>
             <div class="modal-body">
-                <p class="modal-desc">This request will be sent to the Bot Creator and routed to the CEO for final
-                    approval.</p>
+                <p class="modal-desc">This request will be sent to the Bot Creator and routed to the CEO for final approval.</p>
                 <div class="form-group">
                     <label>Proposed Role Title</label>
                     <input type="text" id="botRoleInput" placeholder="e.g., Lead Qualifier">
                 </div>
                 <div class="form-group">
-                    <label>Job Description & Responsibilities</label>
-                    <textarea id="botDescInput" rows="4"
-                        placeholder="Describe exactly what this agent should do..."></textarea>
+                    <label>Job Description &amp; Responsibilities</label>
+                    <textarea id="botDescInput" rows="4" placeholder="Describe exactly what this agent should do..."></textarea>
                 </div>
             </div>
             <div class="modal-footer">
@@ -423,15 +520,13 @@
                 </div>
                 <div class="form-group">
                     <label>Assigned Agent</label>
-                    <select id="taskAgentSelect"
-                        style="width: 100%; padding: 10px; background: rgba(0,0,0,0.3); color: white; border: 1px solid var(--border-glass); border-radius: 8px;">
+                    <select id="taskAgentSelect" style="width:100%;padding:10px;background:rgba(0,0,0,0.3);color:white;border:1px solid var(--border-glass);border-radius:8px;">
                         <!-- Agents will be loaded here -->
                     </select>
                 </div>
                 <div class="form-group">
-                    <label>Instructions & Data</label>
-                    <textarea id="taskDescInput" rows="4"
-                        placeholder="Give context, targets, or specific data..."></textarea>
+                    <label>Instructions &amp; Data</label>
+                    <textarea id="taskDescInput" rows="4" placeholder="Give context, targets, or specific data..."></textarea>
                 </div>
             </div>
             <div class="modal-footer">
@@ -441,8 +536,9 @@
         </div>
     </div>
 
+    <!-- Load Socket.io using relative path since server supports it -->
     <script src="/socket.io/socket.io.js"></script>
-    <script src="script.js?v=2.0"></script>
+    <script src="script.js?v=3"></script>
 </body>
 
 </html>

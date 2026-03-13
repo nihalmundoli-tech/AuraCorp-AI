@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Workwalaa | AAO Performance Dashboard</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Outfit', sans-serif; background: #0b0e14; color: #fff; margin: 0; padding: 20px; }
+        .header { display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #1f2937; padding-bottom: 20px; margin-bottom: 30px; }
+        .logo { font-size: 24px; font-weight: 600; background: linear-gradient(to right, #60a5fa, #a855f7); -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent; }
+        /* ... rest of existing styles ... */
+    </style>
+    <script>
+        // --- Auth Guard ---
+        (function() {
+            const token = localStorage.getItem('waaToken');
+            if (!token) {
+                window.location.href = '/login.html';
+            }
+        })();
+    </script>
+</head>
+        .header { display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #1f2937; padding-bottom: 20px; margin-bottom: 30px; }
+        .logo { font-size: 24px; font-weight: 600; background: linear-gradient(to right, #60a5fa, #a855f7); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+        
+        .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 20px; }
+        .card { background: #111827; border: 1px solid #1f2937; border-radius: 12px; padding: 20px; position: relative; overflow: hidden; }
+        .card::before { content: ""; position: absolute; top: 0; left: 0; width: 4px; height: 100%; background: #3b82f6; }
+        .card.low-health::before { background: #ef4444; }
+        
+        .bot-name { font-size: 18px; font-weight: 600; margin-bottom: 5px; color: #f3f4f6; }
+        .health-badge { float: right; padding: 4px 10px; border-radius: 20px; font-size: 12px; font-weight: 600; }
+        .health-high { background: rgba(34, 197, 94, 0.1); color: #22c55e; border: 1px solid rgba(34, 197, 94, 0.2); }
+        .health-low { background: rgba(239, 68, 68, 0.1); color: #ef4444; border: 1px solid rgba(239, 68, 68, 0.2); }
+        
+        .stat-row { display: flex; justify-content: space-between; margin: 10px 0; font-size: 14px; color: #9ca3af; }
+        .stat-val { color: #fff; font-weight: 600; }
+        
+        .progressBar { width: 100%; height: 6px; background: #1f2937; border-radius: 3px; margin-top: 15px; }
+        .progressFill { height: 100%; background: #3b82f6; border-radius: 3px; transition: width 1s ease-in-out; }
+
+        .logs-section { margin-top: 50px; background: #111827; border: 1px solid #1f2937; border-radius: 12px; padding: 20px; }
+        .log-table { width: 100%; border-collapse: collapse; font-size: 13px; }
+        .log-table th { text-align: left; padding: 12px; border-bottom: 1px solid #1f2937; color: #6b7280; }
+        .log-table td { padding: 12px; border-bottom: 1px solid #1f2937; }
+        .tag { padding: 2px 6px; border-radius: 4px; font-size: 11px; text-transform: uppercase; }
+        .tag-success { background: rgba(34, 197, 94, 0.1); color: #22c55e; }
+        .tag-failure { background: rgba(239, 68, 68, 0.1); color: #ef4444; }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <div class="logo">WORKWALAA AAO Command Center</div>
+        <div id="status">System Online</div>
+    </div>
+
+    <div class="grid" id="botGrid">
+        <!-- Bot Cards Loading -->
+    </div>
+
+    <div class="logs-section">
+        <h3>Live Action Logs</h3>
+        <table class="log-table">
+            <thead>
+                <tr>
+                    <th>Time</th>
+                    <th>Bot</th>
+                    <th>Action</th>
+                    <th>Result</th>
+                </tr>
+            </thead>
+            <tbody id="logBody">
+                <!-- Logs Loading -->
+            </tbody>
+        </table>
+    </div>
+
+    <script>
+        async function updateDashboard() {
+            try {
+                // Fetch Stats
+                const statsResponse = await fetch('/api/monitoring/stats');
+                const stats = await statsResponse.json();
+                
+                const grid = document.getElementById('botGrid');
+                grid.innerHTML = '';
+                
+                stats.forEach(bot => {
+                    const healthClass = bot.last_health_score > 80 ? 'health-high' : 'health-low';
+                    const cardClass = bot.last_health_score < 80 ? 'card low-health' : 'card';
+                    
+                    grid.innerHTML += `
+                        <div class="${cardClass}">
+                            <span class="health-badge ${healthClass}">${bot.last_health_score.toFixed(1)}% Health</span>
+                            <div class="bot-name">${bot.role}</div>
+                            <div class="stat-row">
+                                <span>Success Rate</span>
+                                <span class="stat-val">${((bot.success_count / (bot.success_count + bot.failure_count + 0.001)) * 100).toFixed(0)}%</span>
+                            </div>
+                            <div class="stat-row">
+                                <span>Avg. Speed</span>
+                                <span class="stat-val">${bot.avg_runtime_ms}ms</span>
+                            </div>
+                            <div class="stat-row">
+                                <span>Tasks Done</span>
+                                <span class="stat-val">${bot.total_tasks_done || 0}</span>
+                            </div>
+                            <div class="progressBar">
+                                <div class="progressFill" style="width: ${bot.last_health_score}%"></div>
+                            </div>
+                        </div>
+                    `;
+                });
+
+                // Fetch Logs
+                const logsResponse = await fetch('/api/monitoring/logs');
+                const logs = await logsResponse.json();
+                const logBody = document.getElementById('logBody');
+                logBody.innerHTML = '';
+
+                logs.forEach(log => {
+                    const tagClass = log.action === 'Success' ? 'tag-success' : 'tag-failure';
+                    logBody.innerHTML += `
+                        <tr>
+                            <td style="color: #6b7280; white-space: nowrap;">${new Date(log.created_at).toLocaleTimeString()}</td>
+                            <td style="font-weight: 600;">${log.role}</td>
+                            <td><span class="tag ${tagClass}">${log.action}</span></td>
+                            <td style="color: #d1d5db;">${log.result_summary}</td>
+                        </tr>
+                    `;
+                });
+
+            } catch (e) {
+                console.error('Update failed', e);
+            }
+        }
+
+        setInterval(updateDashboard, 5000);
+        updateDashboard();
+    </script>
+</body>
+</html>
